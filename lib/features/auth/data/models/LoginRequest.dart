@@ -1,7 +1,9 @@
 class LoginRequest {
- const LoginRequest({
+ const LoginRequest(
+     {
      required this.employeeId,
-     required this.password,});
+     required this.password,}
+     );
 
 
   final String employeeId;

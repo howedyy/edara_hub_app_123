@@ -28,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late TextEditingController _emailController;
   late TextEditingController _employeeIdController;
   late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
   late TextEditingController _phoneController;
   final _formKey = GlobalKey<FormState>();
   String ipDevice = '';
@@ -39,6 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController = TextEditingController();
     _employeeIdController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
     _phoneController = TextEditingController();
     _getIpAddress();
 
@@ -52,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _employeeIdController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _phoneController.dispose();
   }
 
@@ -86,7 +89,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Padding(
           padding: const EdgeInsets.all(AppPadding.p20),
           child: SingleChildScrollView(
-          child: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
@@ -118,8 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   hint: 'enter your code no.',
                   backgroundColor: ColorManager.white,
                   label: 'Code Number',
-                  //validation: AppValidators.,
-                  textInputType: TextInputType.phone,
+                 // validation: AppValidators.
+                  //textInputType: TextInputType.phone,
                 ),
                 SizedBox(
                   height: AppSize.s18.h,
@@ -148,11 +150,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: AppSize.s18.h,
                 ),
                 BuildTextField(
-                  //controller: _passwordController,
+                  controller: _confirmPasswordController,
                   hint: 're-enter your password',
                   backgroundColor: ColorManager.white,
                   label: 'Confirm password',
-                  validation: AppValidators.validatePassword,
+                  validation: (val) => AppValidators.validateConfirmPassword(val, _passwordController.text),
                   isObscured: true,
                   textInputType: TextInputType.text,
                 ),
@@ -175,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: BlocListener<AuthCubit, AuthState>(
                          listener: (context, state){
                            if(state is RegisterLoading){
-UIUtils.showLoading(context, isDismissible: false);
+          UIUtils.showLoading(context, isDismissible: false);
                            }
                            else if(state is RegisterError){
                              UIUtils.hideDialog(context);
@@ -215,7 +217,6 @@ UIUtils.showLoading(context, isDismissible: false);
 
               ),
             ),
-          ),
           ),
         ),
       ),

@@ -9,7 +9,14 @@ class User {
       required this.status,});
 
   factory User.fromJson(dynamic json) {
-    return User(id: json['id'], name: json['name'], employeeId: json['employee_id'], email: json['email'], phone: json['phone'], ipDevice: json['ip_device'], status: json['status']);
+    return User(id: json['id'],
+        name: json['name'],
+        employeeId: json['employee_id'],
+        email: json['email'],
+        phone: json['phone'],
+        ipDevice: json['ip_device'],
+        status: json['status']
+    );
 
   }
   final int id;

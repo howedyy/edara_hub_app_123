@@ -4,18 +4,19 @@ class RegisterResponse {
   const RegisterResponse({
     required  this.success,
      required this.message,
-     required this.data,});
+     this.data,});
 
   factory RegisterResponse.fromJson(dynamic json) {
-    return RegisterResponse(success: json['success'],
-        message: json['message'],
-        data: Data.fromJson(json['data'])
+    return RegisterResponse(success: json['success'] ?? false,
+        message: json['message'] ?? '',
+        data: json['data'] != null ? Data.fromJson(json['data']) : null,
+
     );
 
   }
   final bool success;
   final String message;
-  final Data data;
+  final Data? data;
 
 
 
