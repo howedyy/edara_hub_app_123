@@ -16,7 +16,7 @@ class User {
         phone: json['phone'],
         ipDevice: json['ip_device'],
         status: json['status']
-    );
+      );
 
   }
   final int id;

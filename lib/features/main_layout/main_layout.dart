@@ -1,8 +1,8 @@
-import 'package:edara_hub_app/core/resources/assets_manager.dart';
-import 'package:edara_hub_app/core/resources/color_manager.dart';
-import 'package:edara_hub_app/core/widget/home_screen_app_bar.dart';
-import 'package:edara_hub_app/features/main_layout/categories/presentation/categories_tab.dart';
-import 'package:edara_hub_app/features/main_layout/favourite/presentation/favourite_screen.dart';
+import 'package:edara_hub_app_123/core/resources/assets_manager.dart';
+import 'package:edara_hub_app_123/core/resources/color_manager.dart';
+import 'package:edara_hub_app_123/core/widget/home_screen_app_bar.dart';
+import 'package:edara_hub_app_123/features/main_layout/categories/presentation/categories_tab.dart';
+import 'package:edara_hub_app_123/features/main_layout/favourite/presentation/favourite_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'home/presentation/home_tab.dart';

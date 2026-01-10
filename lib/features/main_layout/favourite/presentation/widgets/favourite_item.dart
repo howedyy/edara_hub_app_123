@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:edara_hub_app/core/resources/color_manager.dart';
-import 'package:edara_hub_app/core/resources/constants_manager.dart';
-import 'package:edara_hub_app/core/resources/values_manager.dart';
-import 'package:edara_hub_app/core/routes_manager/routes.dart';
-import 'package:edara_hub_app/core/widget/heart_button.dart';
-import 'package:edara_hub_app/features/main_layout/favourite/presentation/widgets/add_to_cart_button.dart';
-import 'package:edara_hub_app/features/main_layout/favourite/presentation/widgets/favourite_item_details.dart';
+import 'package:edara_hub_app_123/core/resources/color_manager.dart';
+import 'package:edara_hub_app_123/core/resources/constants_manager.dart';
+import 'package:edara_hub_app_123/core/resources/values_manager.dart';
+import 'package:edara_hub_app_123/core/routes_manager/routes.dart';
+import 'package:edara_hub_app_123/core/widget/heart_button.dart';
+import 'package:edara_hub_app_123/features/main_layout/favourite/presentation/widgets/add_to_cart_button.dart';
+import 'package:edara_hub_app_123/features/main_layout/favourite/presentation/widgets/favourite_item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

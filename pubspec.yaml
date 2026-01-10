@@ -1,4 +1,4 @@
-name: edara_hub_app
+name: edara_hub_app_123
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -42,6 +42,8 @@ dependencies:
   dio: ^5.9.0
   flutter_bloc: ^9.1.1
   fluttertoast: ^9.0.0
+  shared_preferences: ^2.5.4
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,5 @@
-import 'package:edara_hub_app/core/resources/values_manager.dart';
-import 'package:edara_hub_app/features/main_layout/categories/presentation/widgets/categories_list.dart';
+import 'package:edara_hub_app_123/core/resources/values_manager.dart';
+import 'package:edara_hub_app_123/features/main_layout/categories/presentation/widgets/categories_list.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/sub_categories_list.dart';

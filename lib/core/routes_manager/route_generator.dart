@@ -1,7 +1,7 @@
-import 'package:edara_hub_app/core/routes_manager/routes.dart';
-import 'package:edara_hub_app/features/auth/presentation/screens/sign_in_screen.dart';
-import 'package:edara_hub_app/features/auth/presentation/screens/sign_up_screen.dart';
-import 'package:edara_hub_app/features/main_layout/main_layout.dart';
+import 'package:edara_hub_app_123/core/routes_manager/routes.dart';
+import 'package:edara_hub_app_123/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:edara_hub_app_123/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:edara_hub_app_123/features/main_layout/main_layout.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {

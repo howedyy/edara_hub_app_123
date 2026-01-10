@@ -1,6 +1,6 @@
-import 'package:edara_hub_app/core/resources/constants_manager.dart';
-import 'package:edara_hub_app/core/resources/values_manager.dart';
-import 'package:edara_hub_app/features/main_layout/favourite/presentation/widgets/favourite_item.dart';
+import 'package:edara_hub_app_123/core/resources/constants_manager.dart';
+import 'package:edara_hub_app_123/core/resources/values_manager.dart';
+import 'package:edara_hub_app_123/features/main_layout/favourite/presentation/widgets/favourite_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

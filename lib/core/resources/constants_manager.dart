@@ -63,6 +63,10 @@ class AppConstants {
 
   }
 
+  abstract class CashConstant {
+  static const String tokenKey = "token";
+  }
+
 
 
 

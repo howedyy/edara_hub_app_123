@@ -1,4 +1,4 @@
-import 'package:edara_hub_app/core/resources/color_manager.dart';
+import 'package:edara_hub_app_123/core/resources/color_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'font_manager.dart';

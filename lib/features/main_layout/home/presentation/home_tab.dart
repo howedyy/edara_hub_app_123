@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:edara_hub_app/features/main_layout/home/presentation/widgets/custom_category_widget.dart';
+import 'package:edara_hub_app_123/features/main_layout/home/presentation/widgets/custom_category_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

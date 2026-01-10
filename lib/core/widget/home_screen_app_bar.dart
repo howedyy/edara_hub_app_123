@@ -1,9 +1,9 @@
-import 'package:edara_hub_app/core/resources/assets_manager.dart';
-import 'package:edara_hub_app/core/resources/color_manager.dart';
-import 'package:edara_hub_app/core/resources/font_manager.dart';
-import 'package:edara_hub_app/core/resources/styles_manager.dart';
-import 'package:edara_hub_app/core/resources/values_manager.dart';
-import 'package:edara_hub_app/core/routes_manager/routes.dart';
+import 'package:edara_hub_app_123/core/resources/assets_manager.dart';
+import 'package:edara_hub_app_123/core/resources/color_manager.dart';
+import 'package:edara_hub_app_123/core/resources/font_manager.dart';
+import 'package:edara_hub_app_123/core/resources/styles_manager.dart';
+import 'package:edara_hub_app_123/core/resources/values_manager.dart';
+import 'package:edara_hub_app_123/core/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
