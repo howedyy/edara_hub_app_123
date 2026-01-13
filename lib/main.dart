@@ -1,3 +1,4 @@
+import 'package:edara_hub_app_123/core/di/service_locator.dart';
 import 'package:edara_hub_app_123/core/routes_manager/routes.dart';
 import 'package:edara_hub_app_123/features/auth/data/data_sources/local/auth_shared_prefs_local_data_source.dart';
 import 'package:edara_hub_app_123/features/auth/data/data_sources/remote/auth_api_remote_data_source.dart';
@@ -10,12 +11,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/routes_manager/route_generator.dart';
 
 void main() {
+
+  setup();
+
   runApp(BlocProvider(
-    create: (context)=>AuthCubit(authRepository: AuthRepositoryImpl(
-            remoteDataSource: AuthApiRemoteDataSource(),
-        localDataSource: AuthSharedPrefsLocalDataSource(),
-        )
-    ),
+    create: (context)=>serviceLocator.get<AuthCubit>(),
       child: const MainApp()
   ));
 }

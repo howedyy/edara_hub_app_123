@@ -19,15 +19,15 @@ class _MainLayoutState extends State<MainLayout> {
   int currentIndex = 0;
   List<Widget> tabs = [
    const HomeTab(),
-   const CategoriesTab(),
+  // const CategoriesTab(),
    const FavouriteScreen(),
    const ProfileTab(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const HomeScreenAppBar(),
-      extendBody: false,
+      //appBar: const HomeScreenAppBar(),
+     // extendBody: false,
       body: tabs[currentIndex],
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(
@@ -46,7 +46,7 @@ class _MainLayoutState extends State<MainLayout> {
             items: [
               // Build BottomNavigationBarItem widgets for each tab
               CustomBottomNavBarItem(IconsAssets.icHome, "Home"),
-              CustomBottomNavBarItem(IconsAssets.icCategory, "Category"),
+              //CustomBottomNavBarItem(IconsAssets.icCategory, "Category"),
               CustomBottomNavBarItem(IconsAssets.icWithList, "WishList"),
               CustomBottomNavBarItem(IconsAssets.icProfile, "Profile"),
             ],

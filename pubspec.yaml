@@ -44,10 +44,16 @@ dependencies:
   fluttertoast: ^9.0.0
   shared_preferences: ^2.5.4
   dartz: ^0.10.1
+  get_it: ^9.2.0
+  injectable:
+
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+   sdk: flutter
+  injectable_generator:
+  build_runner:
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

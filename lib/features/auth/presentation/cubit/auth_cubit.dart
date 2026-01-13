@@ -4,7 +4,8 @@ import 'package:edara_hub_app_123/features/auth/repositories/auth_repository.dar
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:dio/dio.dart';
-
+import 'package:injectable/injectable.dart';
+@singleton
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({required this.authRepository}):super(InitialState());
 

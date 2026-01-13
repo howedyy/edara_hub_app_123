@@ -1,26 +1,17 @@
-import 'package:edara_hub_app_123/core/resources/constants_manager.dart';
-import 'package:edara_hub_app_123/core/resources/values_manager.dart';
-import 'package:edara_hub_app_123/features/main_layout/favourite/presentation/widgets/favourite_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class FavouriteScreen extends StatelessWidget {
+class FavouriteScreen extends StatefulWidget {
   const FavouriteScreen({super.key});
 
   @override
+  State<FavouriteScreen> createState() => _FavoriteTabState();
+}
+
+class _FavoriteTabState extends State<FavouriteScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: AppSize.s14.w, vertical: AppSize.s10.h),
-        child: ListView.builder(
-          itemCount: AppConstants.favoriteProducts.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSize.s12.h),
-              child:
-                  FavoriteItem(product: AppConstants.favoriteProducts[index]),
-            );
-          },
-        ));
+    return const Placeholder(
+      color: Colors.purple,
+    );
   }
 }
