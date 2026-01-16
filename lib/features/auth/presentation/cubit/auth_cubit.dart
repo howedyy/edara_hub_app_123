@@ -1,19 +1,25 @@
 import 'package:edara_hub_app_123/features/auth/data/models/LoginRequest.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/RegisterRequest.dart';
-import 'package:edara_hub_app_123/features/auth/repositories/auth_repository.dart';
+import 'package:edara_hub_app_123/features/auth/domain/repositories/auth_repository.dart';
+
+import 'package:edara_hub_app_123/features/auth/domain/use_cases/login_use_case.dart';
+import 'package:edara_hub_app_123/features/auth/domain/use_cases/register_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 @singleton
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit({required this.authRepository}):super(InitialState());
+  AuthCubit({required this.registerUseCase, required this.loginUseCase}):super(InitialState());
 
-AuthRepository authRepository;
+RegisterUseCase registerUseCase;
+LoginUseCase loginUseCase;
+
+
   void register(RegisterRequest request) async {
 
       emit(RegisterLoading());
-      var result = await  authRepository.register(request);
+      var result = await  registerUseCase(request);
       result.fold((failure){
        emit(RegisterError(message: failure.message));
       }, (user){
@@ -24,7 +30,7 @@ AuthRepository authRepository;
   void login(LoginRequest request)async{
 
       emit(LoginLoading());
-    var result =   await authRepository.login(request);
+    final result = await loginUseCase(request);
     result.fold((failure){
       emit(LoginError(message: failure.message));
     }, (user){

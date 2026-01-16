@@ -1,3 +1,5 @@
+import 'package:edara_hub_app_123/features/auth/domain/entities/user_entity.dart';
+
 class User {
   const User({
       required this.id,
@@ -27,5 +29,6 @@ class User {
   final String ipDevice;
   final String status;
 
+  UserEntity toUserEntity()=> UserEntity(name: name, phone: phone, email: email, employeeId: employeeId, ipDevice: ipDevice, status: status);
 
 }

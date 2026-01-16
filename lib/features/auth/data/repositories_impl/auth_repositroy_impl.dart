@@ -8,7 +8,9 @@ import 'package:edara_hub_app_123/features/auth/data/models/LoginRequest.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/LoginResponse.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/RegisterRequest.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/RegisterResponse.dart';
-import 'package:edara_hub_app_123/features/auth/repositories/auth_repository.dart';
+import 'package:edara_hub_app_123/features/auth/domain/entities/data_entity.dart';
+import 'package:edara_hub_app_123/features/auth/domain/entities/user_entity.dart';
+import 'package:edara_hub_app_123/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 @Singleton(as : AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
@@ -19,22 +21,22 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
   @override
-  Future<Either<Failure, Data>> register(RegisterRequest request) async{
+  Future<Either<Failure, DataEntity>> register(RegisterRequest request) async{
     try{
       final response = await remoteDataSource.register(request);
       await localDataSource.saveToken(response.data!.token);
-      return Right(response.data!);
+      return Right(response.data!.toDataEntity());
     }on AppException catch(exception){
       return Left(Failure(message: exception.message));
     }
   }
 
   @override
-  Future<Either<Failure, Data>> login(LoginRequest request)async {
+  Future<Either<Failure, DataEntity>> login(LoginRequest request)async {
    try {
       final response = await remoteDataSource.login(request);
       await localDataSource.saveToken(response.data!.token);
-      return Right(response.data);
+      return Right(response.data.toDataEntity());
     }on AppException catch(exception){
      return Left(Failure(message: exception.message));  
    }
