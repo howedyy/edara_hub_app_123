@@ -46,6 +46,7 @@ dependencies:
   dartz: ^0.10.1
   get_it: ^9.2.0
   injectable:
+  equatable: ^2.0.8
 
 
 dev_dependencies:

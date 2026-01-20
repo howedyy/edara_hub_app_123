@@ -1,6 +1,8 @@
 import 'package:edara_hub_app_123/features/auth/data/models/LoginRequest.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/RegisterRequest.dart';
+import 'package:edara_hub_app_123/core/resources/constants_manager.dart';
 import 'package:edara_hub_app_123/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:edara_hub_app_123/features/auth/domain/use_cases/login_use_case.dart';
 import 'package:edara_hub_app_123/features/auth/domain/use_cases/register_use_case.dart';
@@ -33,7 +35,10 @@ LoginUseCase loginUseCase;
     final result = await loginUseCase(request);
     result.fold((failure){
       emit(LoginError(message: failure.message));
-    }, (user){
+    }, (dataEntity) async { // Changed from 'user' to 'dataEntity'
+      // Save token
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(CashConstant.tokenKey, dataEntity.token);
       emit(LoginSuccess());
     });
     }

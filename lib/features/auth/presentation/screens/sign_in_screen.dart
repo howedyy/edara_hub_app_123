@@ -33,11 +33,11 @@ class _SignInScreenState extends State<SignInScreen> {
     _codeNumberController =TextEditingController();
     _passwordController = TextEditingController();
   }
-@override
+  @override
   void dispose() {
-    // TODO: implement dispose
     _codeNumberController.dispose();
     _passwordController.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -141,6 +141,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         textStyle: getBoldStyle(
                             color: ColorManager.primary, fontSize: AppSize.s18),
                         onTap: () {
+                          if (_codeNumberController.text.isEmpty || _passwordController.text.isEmpty) {
+                            UIUtils.showToastMessage("Please enter both code number and password", Colors.red);
+                            return;
+                          }
                           BlocProvider.of<AuthCubit>(context).login(LoginRequest(
                               employeeId: _codeNumberController.text,
                               password: _passwordController.text)
