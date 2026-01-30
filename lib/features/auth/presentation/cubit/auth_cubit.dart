@@ -10,44 +10,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+
 @singleton
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit({required this.registerUseCase, required this.loginUseCase}):super(InitialState());
+  AuthCubit({required this.registerUseCase, required this.loginUseCase})
+      : super(InitialState());
 
-RegisterUseCase registerUseCase;
-LoginUseCase loginUseCase;
-
+  RegisterUseCase registerUseCase;
+  LoginUseCase loginUseCase;
 
   void register(RegisterRequest request) async {
-
-      emit(RegisterLoading());
-      var result = await  registerUseCase(request);
-      result.fold((failure){
-       emit(RegisterError(message: failure.message));
-      }, (user){
-        emit(RegisterSuccess());
-      });
+    emit(RegisterLoading());
+    var result = await registerUseCase(request);
+    result.fold((failure) {
+      emit(RegisterError(message: failure.message));
+    }, (user) {
+      // Registration successful but pending approval
+      emit(RegisterPendingApproval(
+        message: 'Registration successful! Your account is pending admin approval. '
+            'You will be notified once your account is approved.',
+      ));
+    });
   }
 
-  void login(LoginRequest request)async{
-
-      emit(LoginLoading());
+  void login(LoginRequest request) async {
+    emit(LoginLoading());
     final result = await loginUseCase(request);
-    result.fold((failure){
-      emit(LoginError(message: failure.message));
-    }, (dataEntity) async { // Changed from 'user' to 'dataEntity'
+    result.fold((failure) {
+      // Check if it's an approval pending error
+      if (failure.message.contains('pending approval')) {
+        emit(LoginPendingApproval(message: failure.message));
+      } else {
+        emit(LoginError(message: failure.message));
+      }
+    }, (dataEntity) async {
       // Save token
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(CashConstant.tokenKey, dataEntity.token);
       emit(LoginSuccess());
     });
-    }
-
-
+  }
 }
 
-
-abstract class AuthState{}
+abstract class AuthState {}
 
 class InitialState extends AuthState {}
 
@@ -58,15 +63,25 @@ class RegisterError extends AuthState {
   RegisterError({required this.message});
 }
 
-class RegisterSuccess extends AuthState{
+class RegisterSuccess extends AuthState {}
 
+/// New state for registration pending approval
+class RegisterPendingApproval extends AuthState {
+  String message;
+  RegisterPendingApproval({required this.message});
 }
 
-class LoginLoading extends AuthState{}
+class LoginLoading extends AuthState {}
 
 class LoginError extends AuthState {
   String message;
   LoginError({required this.message});
 }
 
-class LoginSuccess extends AuthState{}
+/// New state for login when account is pending approval
+class LoginPendingApproval extends AuthState {
+  String message;
+  LoginPendingApproval({required this.message});
+}
+
+class LoginSuccess extends AuthState {}

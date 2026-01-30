@@ -182,7 +182,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                            else if(state is RegisterError){
                              UIUtils.hideDialog(context);
                              UIUtils.showToastMessage(state.message, Colors.red);
-                           }else if(state is RegisterSuccess){
+                           }
+                           else if(state is RegisterPendingApproval){
+                             UIUtils.hideDialog(context);
+                             // Show approval pending dialog
+                             showDialog(
+                               context: context,
+                               barrierDismissible: false,
+                               builder: (context) => AlertDialog(
+                                 title: const Text('Registration Successful'),
+                                 content: Text(state.message),
+                                 actions: [
+                                   TextButton(
+                                     onPressed: () {
+                                       Navigator.of(context).pop();
+                                       Navigator.pushReplacementNamed(context, Routes.signInRoute);
+                                     },
+                                     child: const Text('OK'),
+                                   ),
+                                 ],
+                               ),
+                             );
+                           }
+                           else if(state is RegisterSuccess){
                              UIUtils.hideDialog(context);
                              UIUtils.showToastMessage("Your Data Has Been Submitted", Colors.green);
                              Navigator.pushReplacementNamed(context, Routes.signInRoute);

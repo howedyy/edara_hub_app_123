@@ -65,21 +65,17 @@ class _HomeTabState extends State<HomeTab> {
                           Text("User Name", // Placeholder for UserModel.currentUser!.name
                             style:Theme.of(context).textTheme.headlineLarge?.copyWith(color: ColorManager.white),
                           ),
-                          Row(
-                            children: [
-                              //Icon(Icons.location_on, color: ColorManager.white,),
-                              //Text("Cairo, Egypt",
-                                //style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: ColorManager.white),
-                             // ),
-                            ],
-                          )
+
 
                         ],
                       ),
                       Spacer(),
                       IconButton(onPressed: (){
                         // configProvider.changeAppTheme(...)
-                      }, icon: Icon(Icons.light_mode, color: ColorManager.white,) // Placeholder icon
+                      },
+                          icon: Icon(Icons.notifications,
+                            color: ColorManager.white,
+                          )
                       ),
                       SizedBox(width: AppSize.s10.w,),
                       InkWell(

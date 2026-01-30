@@ -1,0 +1,11 @@
+{
+    "name": "Edara Hub Admin Panel",
+    "short_name": "Edara Admin",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "Admin panel for managing Edara Hub users and events",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false
+}

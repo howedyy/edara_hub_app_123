@@ -41,6 +41,24 @@ class AuthRepositoryImpl implements AuthRepository {
      return Left(Failure(message: exception.message));  
    }
   }
+
+  @override
+  Future<Either<Failure, bool>> checkUserApproval(String phoneNumber) {
+    // TODO: implement checkUserApproval
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, String>> sendOTP(String phoneNumber) {
+    // TODO: implement sendOTP
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, DataEntity>> verifyOTP(String verificationId, String otpCode) {
+    // TODO: implement verifyOTP
+    throw UnimplementedError();
+  }
   
 }
 

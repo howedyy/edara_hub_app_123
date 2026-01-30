@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140881193724",
+    "project_id": "edaraapp-cb18b",
+    "storage_bucket": "edaraapp-cb18b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140881193724:android:ff1b4f459744bd25ad0579",
+        "android_client_info": {
+          "package_name": "com.example.edara_hub_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-U7bLeW3bQUasoRo0bkZzixNJgDc9kxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

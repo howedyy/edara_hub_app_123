@@ -122,10 +122,32 @@ class _SignInScreenState extends State<SignInScreen> {
                     listener: (context,state){
                       if(state is LoginLoading){
                         UIUtils.showLoading(context, isDismissible: false);
-                      }else if(state is LoginError){
+                      }
+                      else if(state is LoginPendingApproval){
+                        UIUtils.hideDialog(context);
+                        // Show approval pending dialog
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Account Pending Approval'),
+                            content: Text(state.message),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      else if(state is LoginError){
                         UIUtils.hideDialog(context);
                         UIUtils.showToastMessage(state.message, Colors.red);
-                      }else if(state is LoginSuccess){
+                      }
+                      else if(state is LoginSuccess){
                         UIUtils.hideDialog(context);
                         UIUtils.showToastMessage("User Logged In Successfully", Colors.green);
                         Navigator.pushReplacementNamed(context, Routes.mainRoute);

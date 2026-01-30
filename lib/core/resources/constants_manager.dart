@@ -61,6 +61,7 @@ class AppConstants {
  static const String registerEndPoint = "register";
  static const String loginEndPoint = "login";
  static const String eventsEndPoint = "events";
+ static const String meEndPoint = "me";
 
   }
 

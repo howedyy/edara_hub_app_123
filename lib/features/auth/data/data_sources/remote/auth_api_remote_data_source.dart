@@ -6,6 +6,7 @@ import 'package:edara_hub_app_123/features/auth/data/models/LoginRequest.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/LoginResponse.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/RegisterRequest.dart';
 import 'package:edara_hub_app_123/features/auth/data/models/RegisterResponse.dart';
+import 'package:edara_hub_app_123/features/auth/data/models/UserStatusResponse.dart';
 import 'package:injectable/injectable.dart';
 @Singleton(as: AuthRemoteDataSource)
 class AuthApiRemoteDataSource implements AuthRemoteDataSource {
@@ -57,6 +58,33 @@ class AuthApiRemoteDataSource implements AuthRemoteDataSource {
         }
       }
       throw RemoteException(message: message ?? "Failed To Login: ${exception.toString()}");
+    }
+  }
+  
+  @override
+  Future<UserStatusResponse> checkUserStatus(String phone) async {
+    try {
+      // Call the /api/v1/me endpoint to get user status
+      // This requires authentication, so we need to ensure the user has a valid token
+      print('Checking user status for phone: $phone');
+      final response = await dio.get(ApiConstant.meEndPoint);
+      print('User status response received: ${response.statusCode}');
+      return UserStatusResponse.fromJson(response.data);
+    } catch (exception) {
+      print('Check user status error: $exception');
+      String? message;
+      if (exception is DioException) {
+        print('DioException type: ${exception.type}');
+        print('DioException response: ${exception.response?.data}');
+        
+        if (exception.response?.data != null) {
+          final data = exception.response?.data;
+          if (data is Map && data['message'] != null) {
+            message = data['message'];
+          }
+        }
+      }
+      throw RemoteException(message: message ?? "Failed to check user status: ${exception.toString()}");
     }
   }
   

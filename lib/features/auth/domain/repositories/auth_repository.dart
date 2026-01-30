@@ -11,5 +11,9 @@ import 'package:edara_hub_app_123/features/auth/domain/entities/user_entity.dart
 abstract class AuthRepository {
  Future<Either<Failure, DataEntity>> register(RegisterRequest request);
  Future<Either<Failure,DataEntity>> login(LoginRequest request);
-
+  
+  // Phone OTP Authentication methods
+  Future<Either<Failure, String>> sendOTP(String phoneNumber);
+  Future<Either<Failure, DataEntity>> verifyOTP(String verificationId, String otpCode);
+  Future<Either<Failure, bool>> checkUserApproval(String phoneNumber);
 }

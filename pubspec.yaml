@@ -47,6 +47,10 @@ dependencies:
   get_it: ^9.2.0
   injectable:
   equatable: ^2.0.8
+  firebase_core: ^3.8.1
+  cloud_firestore: ^5.5.2
+  firebase_auth: ^5.3.4
+  firebase_storage: ^12.3.8
 
 
 dev_dependencies:
@@ -54,6 +58,9 @@ dev_dependencies:
    sdk: flutter
   injectable_generator:
   build_runner:
+  fake_cloud_firestore: ^3.0.3
+  firebase_auth_mocks: ^0.14.1
+  mockito: ^5.4.4
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
