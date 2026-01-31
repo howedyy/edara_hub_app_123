@@ -16,12 +16,13 @@ class _UsersManagementScreenState extends State<UsersManagementScreen> {
     Query query = FirebaseFirestore.instance.collection('users');
     
     if (_filterStatus == 'pending') {
-      query = query.where('approved', isEqualTo: false);
+      query = query.where('approved', isEqualTo: false).orderBy('created_at', descending: true);
     } else if (_filterStatus == 'approved') {
-      query = query.where('approved', isEqualTo: true);
+      query = query.where('approved', isEqualTo: true).orderBy('created_at', descending: true);
     }
+    // For 'all' filter, don't use orderBy to avoid requiring additional index
     
-    return query.orderBy('created_at', descending: true).snapshots();
+    return query.snapshots();
   }
 
   Future<void> _approveUser(String userId, Map<String, dynamic> userData) async {
@@ -262,6 +263,40 @@ class _UsersManagementScreenState extends State<UsersManagementScreen> {
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue.shade100,
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.badge,
+                                                size: 14,
+                                                color: Colors.blue.shade700,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'Code: ${userData['employee_id'] ?? 'N/A'}',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue.shade700,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 4),
                                     Text(

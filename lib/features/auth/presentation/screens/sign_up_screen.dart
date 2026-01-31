@@ -167,7 +167,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   hint: 'enter your mobile number',
                   backgroundColor: ColorManager.white,
                   label: 'Mobile Number',
-                  isObscured: true,
                   textInputType: TextInputType.phone,
                 ),
                 SizedBox(

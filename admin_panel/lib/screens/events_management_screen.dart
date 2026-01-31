@@ -19,12 +19,13 @@ class _EventsManagementScreenState extends State<EventsManagementScreen> {
     Query query = FirebaseFirestore.instance.collection('events');
     
     if (_filterStatus == 'published') {
-      query = query.where('is_published', isEqualTo: true);
+      query = query.where('is_published', isEqualTo: true).orderBy('created_at', descending: true);
     } else if (_filterStatus == 'draft') {
-      query = query.where('is_published', isEqualTo: false);
+      query = query.where('is_published', isEqualTo: false).orderBy('created_at', descending: true);
     }
+    // For 'all' filter, don't use orderBy to avoid requiring additional index
     
-    return query.orderBy('created_at', descending: true).snapshots();
+    return query.snapshots();
   }
 
   Future<void> _createEvent() async {
