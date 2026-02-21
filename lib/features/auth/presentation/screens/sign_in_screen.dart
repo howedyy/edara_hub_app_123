@@ -27,20 +27,25 @@ class _SignInScreenState extends State<SignInScreen> {
 
  late TextEditingController _codeNumberController;
  late TextEditingController _passwordController;
+ 
  @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
+    print('SignInScreen: initState called');
     _codeNumberController =TextEditingController();
     _passwordController = TextEditingController();
   }
+  
   @override
   void dispose() {
     _codeNumberController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+  
   @override
   Widget build(BuildContext context) {
+    print('SignInScreen: build called');
     return Scaffold(
       body: Container(
         width: double.infinity,

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:file_picker/file_picker.dart';
 
 class EventsManagementScreen extends StatefulWidget {
   const EventsManagementScreen({super.key});
@@ -262,6 +261,15 @@ class _EventsManagementScreenState extends State<EventsManagementScreen> {
                                     backgroundColor:
                                         isPublished ? Colors.green : Colors.grey,
                                   ),
+                                  const SizedBox(width: 8),
+                                  if (eventData['attachments'] != null && (eventData['attachments'] as List).isNotEmpty)
+                                    Chip(
+                                      avatar: const Icon(Icons.attach_file, size: 16, color: Colors.blue),
+                                      label: Text(
+                                        '${(eventData['attachments'] as List).length} Files',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
                                 ],
                               ),
                               const SizedBox(height: 8),
@@ -414,7 +422,8 @@ class _EventFormDialogState extends State<EventFormDialog> {
   List<String> _selectedUsers = [];
   List<Map<String, dynamic>> _availableUsers = [];
   bool _isLoading = false;
-  String? _imageUrl;
+  bool _isUploading = false;
+  List<String> _attachments = [];
   bool _isPublished = false;
 
   @override
@@ -435,7 +444,11 @@ class _EventFormDialogState extends State<EventFormDialog> {
     _maxAttendeesController.text = (data['max_attendees'] ?? '').toString();
     _visibility = data['visibility'] ?? 'all_users';
     _selectedUsers = List<String>.from(data['allowed_users'] ?? []);
-    _imageUrl = data['image_url'];
+    _attachments = List<String>.from(data['attachments'] ?? []);
+    // Fallback for old data without attachments but with image_url
+    if (_attachments.isEmpty && data['image_url'] != null) {
+      _attachments.add(data['image_url']);
+    }
     _isPublished = data['is_published'] ?? false;
     
     if (data['event_date'] != null) {
@@ -490,44 +503,86 @@ class _EventFormDialogState extends State<EventFormDialog> {
     }
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickMultimedia() async {
     try {
-      final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
-      uploadInput.accept = 'image/*';
-      uploadInput.click();
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4', 'mov', 'avi'],
+        allowMultiple: true,
+        withData: true, // Crucial for Web
+      );
 
-      uploadInput.onChange.listen((e) async {
-        final files = uploadInput.files;
-        if (files!.isEmpty) return;
+      if (result == null || result.files.isEmpty) return;
 
-        final file = files[0];
-        final fileName = 'events/${DateTime.now().millisecondsSinceEpoch}_${file.name}';
-        
-        setState(() => _isLoading = true);
+      setState(() {
+        _isUploading = true;
+      });
 
-        try {
-          final storageRef = FirebaseStorage.instance.ref().child(fileName);
-          final uploadTask = storageRef.putBlob(file);
-          final snapshot = await uploadTask;
-          final downloadUrl = await snapshot.ref.getDownloadURL();
+      try {
+        for (var file in result.files) {
+          if (file.bytes == null) {
+            print('AdminPanel: File ${file.name} has no bytes, skipping.');
+            continue;
+          }
+
+          final fileName = file.name;
+          print('AdminPanel: Preparing to upload $fileName...');
           
-          setState(() {
-            _imageUrl = downloadUrl;
-            _isLoading = false;
-          });
-        } catch (e) {
-          setState(() => _isLoading = false);
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error uploading image: $e')),
-            );
+          final isVideo = fileName.toLowerCase().endsWith('.mp4') || 
+                          fileName.toLowerCase().endsWith('.mov') || 
+                          fileName.toLowerCase().endsWith('.avi');
+          
+          final folder = isVideo ? 'videos' : 'images';
+          final storagePath = 'events/$folder/${DateTime.now().millisecondsSinceEpoch}_$fileName';
+          
+          final storageRef = FirebaseStorage.instance.ref().child(storagePath);
+          
+          final uploadTask = storageRef.putData(
+            file.bytes!,
+            SettableMetadata(contentType: isVideo ? 'video/mp4' : 'image/jpeg'),
+          );
+          
+          try {
+            print('AdminPanel: Awaiting storage response for $fileName...');
+            // Add a timeout to prevent infinite spinning if network/CORS fails
+            final snapshot = await uploadTask.timeout(const Duration(minutes: 2));
+            final downloadUrl = await snapshot.ref.getDownloadURL();
+            
+            print('AdminPanel: Upload successful: $downloadUrl');
+            if (mounted) {
+              setState(() {
+                _attachments.add(downloadUrl);
+              });
+            }
+          } catch (e) {
+            print('AdminPanel: Error uploading $fileName: $e');
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Failed to upload $fileName: $e'),
+                  backgroundColor: Colors.red,
+                  duration: const Duration(seconds: 5),
+                ),
+              );
+            }
           }
         }
-      });
+      } catch (e) {
+        print('AdminPanel: Critical error during selection/upload loop: $e');
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isUploading = false;
+          });
+          print('AdminPanel: Upload process finished.');
+        }
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error selecting image: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Picker error: $e')),
+        );
+      }
     }
   }
 
@@ -560,13 +615,11 @@ class _EventFormDialogState extends State<EventFormDialog> {
         'current_attendees': 0,
         'visibility': _visibility,
         'allowed_users': _visibility == 'selected_users' ? _selectedUsers : [],
+        'attachments': _attachments,
+        'image_url': _attachments.isNotEmpty ? _attachments.first : null, // Retro-compatibility
         'is_published': _isPublished,
         'updated_at': FieldValue.serverTimestamp(),
       };
-
-      if (_imageUrl != null) {
-        eventData['image_url'] = _imageUrl!;
-      }
 
       if (widget.eventId != null) {
         // Update existing event
@@ -649,57 +702,93 @@ class _EventFormDialogState extends State<EventFormDialog> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Image Upload Section
                       Container(
                         width: double.infinity,
-                        height: 200,
+                        height: 180,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey[300]!),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: _imageUrl != null
-                            ? Stack(
+                        child: _isUploading
+                            ? const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      _imageUrl!,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      fit: BoxFit.cover,
+                                  CircularProgressIndicator(),
+                                  SizedBox(height: 16),
+                                  Text('Uploading files... Please wait.'),
+                                ],
+                              )
+                            : _attachments.isEmpty
+                                ? InkWell(
+                                    onTap: _pickMultimedia,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.cloud_upload_outlined, size: 48, color: Colors.blue[300]),
+                                        const SizedBox(height: 8),
+                                        const Text('Click to upload images and videos'),
+                                        Text('Support multiple files', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                                      ],
+                                    ),
+                                  )
+                            : Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Text('${_attachments.length} files selected', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        const Spacer(),
+                                        TextButton.icon(
+                                          onPressed: _isUploading ? null : _pickMultimedia,
+                                          icon: const Icon(Icons.add),
+                                          label: const Text('Add More'),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 8,
-                                    right: 8,
-                                    child: IconButton(
-                                      onPressed: () => setState(() => _imageUrl = null),
-                                      icon: const Icon(Icons.delete),
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        foregroundColor: Colors.white,
-                                      ),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      itemCount: _attachments.length,
+                                      itemBuilder: (context, index) {
+                                        final url = _attachments[index];
+                                        final isVideo = url.contains('/videos/') || url.contains('.mp4');
+                                        
+                                        return Stack(
+                                          children: [
+                                            Container(
+                                              width: 120,
+                                              margin: const EdgeInsets.only(right: 8, bottom: 8),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                image: !isVideo ? DecorationImage(
+                                                  image: NetworkImage(url),
+                                                  fit: BoxFit.cover,
+                                                ) : null,
+                                                color: isVideo ? Colors.black87 : Colors.grey[200],
+                                              ),
+                                              child: isVideo ? const Center(child: Icon(Icons.play_circle_outline, color: Colors.white, size: 40)) : null,
+                                            ),
+                                            Positioned(
+                                              top: 4,
+                                              right: 12,
+                                              child: InkWell(
+                                                onTap: () => setState(() => _attachments.removeAt(index)),
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(2),
+                                                  decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                                                  child: const Icon(Icons.close, size: 14, color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
-                              )
-                            : InkWell(
-                                onTap: _pickImage,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.cloud_upload,
-                                      size: 48,
-                                      color: Colors.grey[400],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Click to upload event image',
-                                      style: TextStyle(color: Colors.grey[600]),
-                                    ),
-                                  ],
-                                ),
                               ),
                       ),
                       const SizedBox(height: 16),
@@ -920,8 +1009,8 @@ class _EventFormDialogState extends State<EventFormDialog> {
                 ),
                 const SizedBox(width: 16),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _saveEvent,
-                  child: _isLoading
+                  onPressed: (_isLoading || _isUploading) ? null : _saveEvent,
+                  child: (_isLoading || _isUploading)
                       ? const SizedBox(
                           width: 20,
                           height: 20,

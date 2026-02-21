@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'users_management_screen.dart';
 import 'events_management_screen.dart';
+import 'deals_management_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -16,6 +17,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Widget> _screens = [
     const UsersManagementScreen(),
     const EventsManagementScreen(),
+    const DealsManagementScreen(),
   ];
 
   Future<void> _logout() async {
@@ -85,6 +87,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: Icon(Icons.event_outlined),
                 selectedIcon: Icon(Icons.event),
                 label: Text('Events'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.local_offer_outlined),
+                selectedIcon: Icon(Icons.local_offer),
+                label: Text('Deals'),
               ),
             ],
           ),

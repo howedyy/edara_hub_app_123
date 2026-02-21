@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:edara_hub_app_123/core/errors/faliure.dart';
@@ -93,27 +94,33 @@ class AuthFirebaseRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, DataEntity>> login(LoginRequest request) async {
     try {
-      // Step 1: Query Firestore to find user by employee_id (without authentication)
-      // We need to get the email associated with this employee_id
-      final usersResult = await _firestoreService.getUserByEmployeeId(
-        employeeId: request.employeeId,
-      );
+      // Step 0: Sign out first to ensure a fresh session and allow unauthenticated Firestore query
+      await _authService.logout();
 
-      if (!usersResult['success']) {
-        return Left(Failure(message: 'User not found'));
+      final String input = request.employeeId.trim();
+      String? email;
+      Map<String, dynamic>? userData;
+
+      if (input.contains('@')) {
+        // Direct Login with Email
+        email = input;
+      } else {
+        // Lookup Email by Code Number
+        final usersResult = await _firestoreService.getUserByEmployeeId(
+          employeeId: input,
+        );
+
+        if (usersResult['success'] && usersResult['data'] != null) {
+          userData = usersResult['data'] as Map<String, dynamic>;
+          email = userData?['email'];
+        } else {
+          return Left(Failure(message: 'the code "$input" does not exist'));
+        }
       }
 
-      final userData = usersResult['data'] as Map<String, dynamic>?;
-      if (userData == null) {
-        return Left(Failure(message: 'User not found'));
-      }
-
-      final String email = userData['email'];
-      final String userId = userData['id'];
-
-      // Step 2: Authenticate with Firebase using email and password
+      // Step 2: Authenticate with Firebase
       final authResult = await _authService.login(
-        email: email,
+        email: email!,
         password: request.password,
       );
 
@@ -126,14 +133,13 @@ class AuthFirebaseRepositoryImpl implements AuthRepository {
         return Left(Failure(message: 'Authentication failed'));
       }
 
-      // Step 3: Verify the authenticated user matches the queried user
-      if (firebaseUser.uid != userId) {
-        await _authService.logout();
-        return Left(Failure(message: 'Authentication mismatch'));
+      // Step 3: Check approval status
+      if (userData == null) {
+        final doc = await FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid).get();
+        userData = doc.data();
       }
 
-      // Step 4: Check approval status
-      final bool isApproved = userData['approved'] ?? false;
+      final bool isApproved = userData?['approved'] ?? true;
 
       if (!isApproved) {
         // User is not approved yet - sign them out
@@ -143,7 +149,7 @@ class AuthFirebaseRepositoryImpl implements AuthRepository {
         ));
       }
 
-      // Step 5: Get Firebase ID token for approved user
+      // Step 4: Get Firebase ID token for approved user
       final String? idToken = await firebaseUser.getIdToken();
 
       if (idToken == null) {
@@ -151,14 +157,14 @@ class AuthFirebaseRepositoryImpl implements AuthRepository {
         return Left(Failure(message: 'Failed to generate authentication token'));
       }
 
-      // Step 6: Create UserEntity from Firestore data
+      // Step 5: Create UserEntity from Firestore data or Firebase User
       final userEntity = UserEntity(
-        name: userData['name'] ?? '',
-        phone: userData['phone'] ?? '',
-        email: userData['email'] ?? '',
-        employeeId: userData['employee_id'] ?? '',
-        ipDevice: userData['ip_device'] ?? '',
-        status: userData['status'] ?? 'active',
+        name: userData?['name'] ?? firebaseUser.displayName ?? '',
+        phone: userData?['phone'] ?? firebaseUser.phoneNumber ?? '',
+        email: userData?['email'] ?? firebaseUser.email ?? '',
+        employeeId: userData?['employee_id'] ?? '',
+        ipDevice: userData?['ip_device'] ?? '',
+        status: userData?['status'] ?? 'active',
       );
 
       // Step 7: Return success with token and user data

@@ -5,7 +5,9 @@ abstract class ColorManager {
   static Color appBarTitleColor = const Color(0xFF06004F);
   static Color primaryDark = const Color(0xFF06004F);
 
-
+  // Header gradient colors (used in home and deals screens)
+  static Color headerGradientStart = const Color(0xFF5D5FEF);
+  static Color headerGradientEnd = const Color(0xFF4A49D1);
 
   static Color darkGrey = const Color(0xff525252);
   static Color grey = const Color(0xff737477);
@@ -26,7 +28,4 @@ abstract class ColorManager {
   static Color grey2 = const Color(0xff797979);
   static Color white = const Color(0xffFFFFFF);
   static Color error = const Color(0xffe61f34); // red color
-
-
-
 }

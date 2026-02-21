@@ -1,17 +1,21 @@
 part of 'home_bloc.dart';
 
-abstract class HomeState {}
-
-class HomeInitial extends HomeState {}
-
-class HomeLoading extends HomeState {}
-
-class HomeSuccess extends HomeState {
-  final List<EventEntity> events;
-  HomeSuccess(this.events);
+abstract class HomeState extends Equatable {
+  @override
+  List<Object?> get props => [];
 }
 
-class HomeFailure extends HomeState {
+class HomeInitial extends HomeState {}
+class HomeLoading extends HomeState {}
+class HomeLoaded extends HomeState {
+  final List<EventEntity> events;
+  HomeLoaded(this.events);
+  @override
+  List<Object?> get props => [events];
+}
+class HomeError extends HomeState {
   final String message;
-  HomeFailure(this.message);
+  HomeError(this.message);
+  @override
+  List<Object?> get props => [message];
 }
