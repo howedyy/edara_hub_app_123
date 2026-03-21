@@ -1,7 +1,7 @@
 import 'package:edara_hub_app_123/core/resources/UI_Utils.dart';
 import 'package:edara_hub_app_123/core/routes_manager/routes.dart';
 import 'package:edara_hub_app_123/core/widget/custom_elevated_button.dart';
-import 'package:edara_hub_app_123/features/auth/data/models/RegisterRequest.dart';
+import 'package:edara_hub_app_123/features/auth/data/models/register_request.dart';
 import 'package:edara_hub_app_123/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
