@@ -41,6 +41,7 @@ dependencies:
   auto_size_text: ^3.0.0
   dio: ^5.9.0
   flutter_bloc: ^9.1.1
+  flutter_secure_storage: ^9.2.2
   fluttertoast: ^9.0.0
   shared_preferences: ^2.5.4
   dartz: ^0.10.1

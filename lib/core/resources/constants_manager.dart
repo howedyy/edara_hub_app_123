@@ -57,13 +57,13 @@ class AppConstants {
 
 }
   abstract class ApiConstant{
- static const String baseUrl = "http://api.iitsolutions.net/api/v1/";
+ static const String baseUrl = "https://api.iitsolutions.net/api/v1/";
  static const String registerEndPoint = "register";
  static const String loginEndPoint = "login";
 
   }
 
-  abstract class CashConstant {
+  abstract class CacheConstant {
   static const String tokenKey = "token";
   }
 

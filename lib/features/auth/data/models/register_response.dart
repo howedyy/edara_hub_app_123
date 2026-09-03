@@ -1,4 +1,4 @@
-import 'Data.dart';
+import 'data.dart';
 
 class RegisterResponse {
   const RegisterResponse({
